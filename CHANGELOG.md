@@ -10,3 +10,4 @@
 - Hardened `scripts/save_connections.py` to normalize percent-encoded/Unicode and regional LinkedIn `/in/` slugs, reject boolean values and encoded path separators, and added a standard-library `unittest` suite in `tests/test_save_connections.py`.
 - Standardized deterministic schemas under `temp/<account>/` (`checkpoint.json`, `watchlist.csv`, `posts.csv`, `opportunities.csv`, `outcomes.csv`) and clarified per-run 30-action budget allocation in `SKILL.md`.
 - Added a local LinkedIn Connections.csv importer that seeds the inventory while preserving browser enrichment.
+- Added browser queue status and topic-prioritized batch planning within the content-load budget.

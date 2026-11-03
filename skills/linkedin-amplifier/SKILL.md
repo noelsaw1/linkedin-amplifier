@@ -27,6 +27,10 @@ For a connection-size-only request, default to inspecting up to 50 people in Con
 
 If the user supplies an official extracted Connections.csv, use `python3 scripts/import_linkedin_export.py --account PROFILE_SLUG /path/to/Connections.csv` from the repository root. Confirm the export owner before choosing the account. Use its rows as first-degree candidates from the export date. CSV membership alone does not mark a profile as browser-inspected. Prioritize browser enrichment by topic and use the checkpoint to record completed inspections, including when a field was unavailable.
 
+## Plan browser enrichment
+
+Run `python3 scripts/browser_queue.py status --account PROFILE_SLUG` before selecting a batch. Use `next-batch` with the same account, `--actions-used` for actions already spent this run, and `--actions-per-profile` for the expected cost. Pass repeatable `--priority-url` flags for known topic matches in preference order using evidence from the user's export, feed, or prior notes. The inventory alone does not supply topic evidence. An empty batch with a blocker means stop until the user resolves it. Track actual loads as you go, even when a candidate exceeds its estimate. Update inspected, inaccessible, and pending URLs in the checkpoint after each candidate.
+
 ## Inventory the entire network
 
 When explicitly requested, scan the signed-in account's Connections list from beginning to end over resumable batches. Capture only first-degree profiles. Open Contact info to read an email address if the interface displays one. Record the visible profile name, canonical permalink, email, and exact follower count. Leave unavailable or rounded values blank. Do not infer email addresses or look them up elsewhere.

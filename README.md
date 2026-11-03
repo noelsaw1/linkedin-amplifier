@@ -43,3 +43,16 @@ python3 scripts/save_connections.py --account your-profile-slug < /path/to/obser
 ```
 
 Each input line is a JSON object with keys `name`, `linkedin_permalink`, `email`, and `followers`. Replaying observations produces the same rows. A new nonblank value updates the corresponding field and a blank observation preserves the last known value.
+
+## Plan a browser batch
+
+```sh
+python3 scripts/browser_queue.py status --account your-profile-slug
+python3 scripts/browser_queue.py next-batch --account your-profile-slug \
+  --actions-used 2 --actions-per-profile 4 \
+  --priority-url https://www.linkedin.com/in/topic-match/
+```
+
+Both commands return JSON. Status separates inventory rows awaiting inspection from profiles marked inspected or inaccessible in the checkpoint. Inventory rows can come from an export or browser observation. The CSV has no source column. The queue also includes pending URLs from the checkpoint.
+
+Pass repeatable `--priority-url` flags in preference order for people with evidence of topic fit, such as a relevant role in the original export or a post you've already seen. The CLI fills the rest of the batch in permalink order. It defaults to 30 actions per run and reserves four per profile. Set the cost for your workflow and pass actions already used in the current run. Continue enforcing the actual action cap while browsing. A saved blocker yields an empty batch until resolved.
