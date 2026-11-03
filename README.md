@@ -1,8 +1,8 @@
 # LinkedIn Amplifier
 
-LinkedIn Amplifier is a Codex skill for finding people in your first-degree network who consistently start useful discussions in your field. It builds a watchlist by topic and suggests fresh posts where you have something specific to contribute.
+LinkedIn Amplifier is an agent skill (compatible with Codex, Claude Code, Antigravity, and other `SKILL.md` harnesses) for finding people in your first-degree network who consistently start useful discussions in your field. It builds a watchlist by topic and suggests fresh posts where you have something specific to contribute.
 
-The reusable instructions live in [SKILL.md](skills/linkedin-amplifier/SKILL.md). Point Codex at that file and ask it to use your signed-in Chromium session or your open LinkedIn tab.
+The reusable instructions live in [SKILL.md](skills/linkedin-amplifier/SKILL.md). Point your agent at that file and ask it to use your signed-in Chromium session or your open LinkedIn tab.
 
 > Use the LinkedIn Amplifier skill to find first-degree connections who start substantive discussions about AI coding agents and product design. Give me a watchlist and three recent posts where I could add something from my own experience.
 
@@ -12,7 +12,7 @@ The skill also supports visible connection counts and follow-up on comments you 
 
 Browser runs use one tab, space content-loading actions at least 15 seconds apart, and checkpoint after at most 30 such actions. The skill stops if LinkedIn shows a rate limit, verification prompt, or restriction.
 
-To continue a scan, ask Codex to resume from its saved checkpoint. It verifies the signed-in account and skips profiles and posts it has already inspected. Keep scan results and checkpoints in the gitignored `temp/` directory.
+To continue a scan, ask the agent to resume from its saved checkpoint (`temp/<account>/checkpoint.json`). It verifies the signed-in account and skips profiles and posts it has already inspected, saving structured outputs (`connections.csv`, `watchlist.csv`, `posts.csv`, `opportunities.csv`, and `outcomes.csv`) in the gitignored `temp/<account>/` directory.
 
 See the [changelog](CHANGELOG.md) for changes to the workflow.
 

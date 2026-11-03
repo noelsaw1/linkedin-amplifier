@@ -11,7 +11,7 @@ Use the user's signed-in Chromium browser or their explicitly selected LinkedIn 
 
 Use one tab and one LinkedIn action at a time. Start actions that load content (opening a profile or post, pagination, or expanding comments) at least 15 seconds apart. Wait for the current view to settle before continuing. Reading the current view and writing local checkpoints do not consume the action budget.
 
-Default to at most 30 content-loading actions per run across discovery and inspection. The candidate and post sample sizes are upper bounds across resumable runs. Save a checkpoint at the budget limit and resume on a later user-requested run. Do not automatically chain batches.
+Default to at most 30 content-loading actions per run across discovery and inspection. The candidate and post sample sizes are upper bounds across resumable runs. Because opening a profile activity feed and expanding comment threads consumes 3–4 actions per candidate, allocate roughly 8–10 candidates per 30-action pass and complete a 15–20 candidate pilot across two or more resumable runs. Save a checkpoint at the budget limit and resume on a later user-requested run. Do not automatically chain batches.
 
 Stop immediately on a rate-limit notice, CAPTCHA, sign-in or verification checkpoint, or account restriction. Save completed results and the next pending URL, report the visible blocker, and leave resolution to the user. Do not retry through another browser or account. The pacing limits reduce browsing volume and do not guarantee that LinkedIn will allow a run.
 
@@ -47,4 +47,13 @@ Return up to three posts per run. Favor fresh posts, typically from the past 72 
 
 When the user reports or asks you to inspect a comment they posted, log its link, date, topic, and original post. Recheck at roughly 24 hours and seven days when requested. Record visible replies from the author and other people, any available comment impressions, and meaningful follow-up conversations. Use same-length baseline and observation windows for profile-view trends when available. Log the user's own posts and other relevant activity alongside the trend. Profile views alone cannot attribute visits to a specific comment.
 
-Keep local results in a watchlist, post evidence log, opportunity queue, and optional comment outcome log. A CSV or Markdown table is sufficient. Checkpoint periodically with account, filters, inspected and pending profile/post URLs, and last browsing position. Verify the account before resuming. Keep private network data under the gitignored `temp/` directory. Report coverage, missing metrics, and any access blocker with the results.
+Keep local results in `temp/<account>/` using deterministic filenames and schemas so resumable runs stay consistent across sessions:
+
+- `connections.csv`: `name,linkedin_permalink,email,followers` (managed via `scripts/save_connections.py`)
+- `checkpoint.json`: JSON object with keys `account`, `workflow`, `updated_at`, `actions_used`, `filters`, `last_position`, `inspected_urls`, `pending_urls`, `inaccessible_urls`, `end_of_list_reached`, and `blocker`
+- `watchlist.csv`: `topic,name,linkedin_permalink,sample_size,median_distinct_participants,coverage,author_replies_observed,provisional,rep_post_1,rep_post_2`
+- `posts.csv`: `author_permalink,topic,post_url,posted_at,post_type,reactions,displayed_comments,distinct_participants,substantive_peer_comments,author_replies,coverage,observed_at`
+- `opportunities.csv`: `post_url,author_permalink,topic,age,observed_discussion,audience_fit,comment_angle,observed_at`
+- `outcomes.csv`: `comment_url,post_url,topic,posted_at,check_24h_at,check_7d_at,author_replies,peer_replies,impressions,profile_views_baseline,profile_views_window,own_activity_notes`
+
+Checkpoint periodically and verify the signed-in account before resuming. Keep private network data under the gitignored `temp/` directory. Report coverage, missing metrics, and any access blocker with the results.

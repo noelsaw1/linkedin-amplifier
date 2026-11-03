@@ -10,27 +10,49 @@ from pathlib import Path
 import re
 import sys
 import tempfile
-from urllib.parse import urlsplit
+from urllib.parse import quote, unquote, urlsplit
 
 FIELDS = ("name", "linkedin_permalink", "email", "followers")
 ROOT = Path(__file__).resolve().parents[1]
 
 
 def normalize(record):
-    row = {field: str(record.get(field) or "").strip() for field in FIELDS}
+    if not isinstance(record, dict):
+        raise ValueError("Observation must be a JSON object")
+    row = {}
+    for field in FIELDS:
+        raw = record.get(field)
+        if isinstance(raw, bool):
+            raise ValueError(f"Field '{field}' must not be a boolean")
+        row[field] = str(raw if raw is not None else "").strip()
+
     url = urlsplit(row["linkedin_permalink"])
-    match = re.fullmatch(r"/in/([a-zA-Z0-9%_-]+)/?", url.path)
-    if url.scheme != "https" or url.netloc.lower() not in {
-        "linkedin.com", "www.linkedin.com"
-    } or match is None:
+    host = (url.hostname or "").lower()
+    match = re.fullmatch(r"/in/([^/?#]+)/?", url.path)
+    if (
+        url.scheme != "https"
+        or url.port is not None
+        or not (
+            host in {"linkedin.com", "www.linkedin.com"}
+            or re.fullmatch(r"[a-z]{2}\.linkedin\.com", host)
+        )
+        or match is None
+    ):
         raise ValueError("Expected an HTTPS LinkedIn /in/ profile permalink")
-    row["linkedin_permalink"] = f"https://www.linkedin.com/in/{match[1].lower()}/"
+    slug = unquote(match[1]).strip().lower()
+    if not slug or not re.fullmatch(r"[\w-]+", slug):
+        raise ValueError("Expected an HTTPS LinkedIn /in/ profile permalink")
+    row["linkedin_permalink"] = f"https://www.linkedin.com/in/{quote(slug, safe='-_')}/"
+
     followers = record.get("followers")
-    if followers is not None and followers != "":
+    if followers is not None and str(followers).strip() != "":
         count = str(followers).strip()
         if not re.fullmatch(r"[0-9]+|[0-9]{1,3}(?:,[0-9]{3})+", count):
             raise ValueError("Followers must be an exact nonnegative integer or blank")
         row["followers"] = str(int(count.replace(",", "")))
+    else:
+        row["followers"] = ""
+
     for field in ("name", "email"):
         if row[field].startswith(("=", "+", "-", "@")):
             row[field] = "'" + row[field]
