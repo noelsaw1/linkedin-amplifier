@@ -59,7 +59,7 @@ def normalize(record):
     return row
 
 
-def merge(path, observations):
+def merge(path, observations, *, fill_missing=False):
     path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
     with path.with_suffix(".lock").open("a") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
@@ -72,8 +72,9 @@ def merge(path, observations):
         for row in observations:
             permalink = row["linkedin_permalink"]
             previous = rows.get(permalink, {})
+            preferred, fallback = (previous, row) if fill_missing else (row, previous)
             rows[permalink] = {
-                field: row[field] or previous.get(field, "") for field in FIELDS
+                field: preferred.get(field, "") or fallback.get(field, "") for field in FIELDS
             }
         with tempfile.NamedTemporaryFile(
             dir=path.parent, mode="w", encoding="utf-8", newline="", delete=False

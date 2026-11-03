@@ -23,13 +23,17 @@ Use the user's topics and scope. For an initial engagement pilot, default to 15â
 
 For a connection-size-only request, default to inspecting up to 50 people in Connections list order. Record the displayed count, exact/lower-bound/unknown status, and followers separately. Sort by visible lower bound and leave identical capped labels tied. An unbounded count can exceed a larger exact count. State coverage and never infer global ordering from capped or missing totals. Exclude mutual-connection totals and filtered search counts.
 
+## Bootstrap from a LinkedIn export
+
+If the user supplies an official extracted Connections.csv, use `python3 scripts/import_linkedin_export.py --account PROFILE_SLUG /path/to/Connections.csv` from the repository root. Confirm the export owner before choosing the account. Use its rows as first-degree candidates from the export date. CSV membership alone does not mark a profile as browser-inspected. Prioritize browser enrichment by topic and use the checkpoint to record completed inspections, including when a field was unavailable.
+
 ## Inventory the entire network
 
 When explicitly requested, scan the signed-in account's Connections list from beginning to end over resumable batches. Capture only first-degree profiles. Open Contact info to read an email address if the interface displays one. Record the visible profile name, canonical permalink, email, and exact follower count. Leave unavailable or rounded values blank. Do not infer email addresses or look them up elsewhere.
 
 After each completed profile, pipe one JSON object as a line to `python3 scripts/save_connections.py --account PROFILE_SLUG` from the repository root. Supply the fields `name`, `linkedin_permalink`, `email`, and `followers`. The script merges the observation into `temp/PROFILE_SLUG/connections.csv`. Count opening Contact info, paging, and reopening a profile toward the browser budget.
 
-Save the traversal checkpoint in the same account directory. Record the Connections list position, last profile URL, pending or inaccessible profiles, and whether the end of the list was reached. Resume using the same account and skip URLs already in the CSV unless refreshing explicitly. Save partial browser progress separately if interrupted before a profile is complete. Report inspected, pending, and inaccessible profiles, and claim full coverage only after reaching the end and accounting for skipped entries.
+Save the traversal checkpoint in the same account directory. Record the Connections list position, last profile URL, pending or inaccessible profiles, and whether the end of the list was reached. Resume using the same account and skip URLs recorded as inspected in the checkpoint unless refreshing explicitly. Save partial browser progress separately if interrupted before a profile is complete. Report inspected, pending, and inaccessible profiles, and claim full coverage only after reaching the end and accounting for skipped entries.
 
 ## Build a topic watchlist
 

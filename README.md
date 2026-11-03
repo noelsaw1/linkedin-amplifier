@@ -16,6 +16,18 @@ To continue a scan, ask the agent to resume from its saved checkpoint (`temp/<ac
 
 See the [changelog](CHANGELOG.md) for changes to the workflow.
 
+## Start with your LinkedIn export
+
+In LinkedIn, go to **Me → Settings & Privacy → Data Privacy → Download your data** (also labeled **Get a copy of your data**). Request the archive that includes connections, download it, and extract `Connections.csv`. LinkedIn includes email addresses according to each connection's export privacy settings. [LinkedIn export instructions](https://www.linkedin.com/help/recruiter/answer/a566336)
+
+From the repository root, run:
+
+```sh
+python3 scripts/import_linkedin_export.py --account your-profile-slug "/path/to/Connections.csv"
+```
+
+Use the export owner's profile slug, the part after `/in/` in their profile URL. The importer reads the extracted English-header CSV, including its optional notes and UTF-8 BOM. It reports skipped rows with missing or invalid profile links and seeds `temp/<account>/connections.csv` without browser visits. Reimporting fills missing values and preserves existing nonblank data, including follower counts. Company, position, and connection date remain in the original export. Imported profiles are candidates for browser inspection.
+
 ## Inventory your full network
 
 Start the first batch overnight if convenient. Keep the signed-in browser available and ask Codex to use the skill with this prompt:
