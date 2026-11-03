@@ -23,6 +23,14 @@ Use the user's topics and scope. For an initial engagement pilot, default to 15â
 
 For a connection-size-only request, default to inspecting up to 50 people in Connections list order. Record the displayed count, exact/lower-bound/unknown status, and followers separately. Sort by visible lower bound and leave identical capped labels tied. An unbounded count can exceed a larger exact count. State coverage and never infer global ordering from capped or missing totals. Exclude mutual-connection totals and filtered search counts.
 
+## Inventory the entire network
+
+When explicitly requested, scan the signed-in account's Connections list from beginning to end over resumable batches. Capture only first-degree profiles. Open Contact info to read an email address if the interface displays one. Record the visible profile name, canonical permalink, email, and exact follower count. Leave unavailable or rounded values blank. Do not infer email addresses or look them up elsewhere.
+
+After each completed profile, pipe one JSON object as a line to `python3 scripts/save_connections.py --account PROFILE_SLUG` from the repository root. Supply the fields `name`, `linkedin_permalink`, `email`, and `followers`. The script merges the observation into `temp/PROFILE_SLUG/connections.csv`. Count opening Contact info, paging, and reopening a profile toward the browser budget.
+
+Save the traversal checkpoint in the same account directory. Record the Connections list position, last profile URL, pending or inaccessible profiles, and whether the end of the list was reached. Resume using the same account and skip URLs already in the CSV unless refreshing explicitly. Save partial browser progress separately if interrupted before a profile is complete. Report inspected, pending, and inaccessible profiles, and claim full coverage only after reaching the end and accounting for skipped entries.
+
 ## Build a topic watchlist
 
 Review up to eight original posts per candidate from the last 60 days. Select consecutive eligible posts in date order to avoid cherry-picking. Separate announcements, engagement bait, and reshares without original analysis from substantive posts. Save author, topic, post URL, date, post type, visible reactions, displayed comment count, and observation time. Keep approximate dates and unavailable counts marked as such.
@@ -39,4 +47,4 @@ Return up to three posts per run. Favor fresh posts, typically from the past 72 
 
 When the user reports or asks you to inspect a comment they posted, log its link, date, topic, and original post. Recheck at roughly 24 hours and seven days when requested. Record visible replies from the author and other people, any available comment impressions, and meaningful follow-up conversations. Use same-length baseline and observation windows for profile-view trends when available. Log the user's own posts and other relevant activity alongside the trend. Profile views alone cannot attribute visits to a specific comment.
 
-Keep local results in a watchlist, post evidence log, opportunity queue, and optional comment outcome log. A CSV or Markdown table is sufficient. Checkpoint periodically with account, filters, inspected and pending profile/post URLs, and last browsing position. Verify the account before resuming. Keep private network data outside the skill repository. Report coverage, missing metrics, and any access blocker with the results.
+Keep local results in a watchlist, post evidence log, opportunity queue, and optional comment outcome log. A CSV or Markdown table is sufficient. Checkpoint periodically with account, filters, inspected and pending profile/post URLs, and last browsing position. Verify the account before resuming. Keep private network data under the gitignored `temp/` directory. Report coverage, missing metrics, and any access blocker with the results.
