@@ -11,3 +11,4 @@
 - Standardized deterministic schemas under `temp/<account>/` (`checkpoint.json`, `watchlist.csv`, `posts.csv`, `opportunities.csv`, `outcomes.csv`) and clarified per-run 30-action budget allocation in `SKILL.md`.
 - Added a local LinkedIn Connections.csv importer that seeds the inventory while preserving browser enrichment.
 - Added browser queue status and topic-prioritized batch planning within the content-load budget.
+- Added audience and use cases near the top of the README.

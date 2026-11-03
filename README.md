@@ -2,6 +2,17 @@
 
 LinkedIn Amplifier is an agent skill (compatible with Codex, Claude Code, Antigravity, and other `SKILL.md` harnesses) for finding people in your first-degree network who consistently start useful discussions in your field. It builds a watchlist by topic and suggests fresh posts where you have something specific to contribute.
 
+## Who's this for
+
+Professionals who want to find peers and subject matter experts in their existing LinkedIn network, follow conversations in their field, and contribute from firsthand experience.
+
+## Use Cases
+
+- **Find experts by topic.** Build a watchlist of direct connections whose posts regularly draw substantive questions, examples, and replies.
+- **Find conversations to join.** Get up to three recent posts with a suggested angle grounded in your experience.
+- **Inventory your network.** Import your LinkedIn connections export and prioritize profiles for browser inspection.
+- **Follow up on your comments.** Track replies and visible impressions to see which conversations led to further discussion.
+
 The reusable instructions live in [SKILL.md](skills/linkedin-amplifier/SKILL.md). Point your agent at that file and ask it to use your signed-in Chromium session or your open LinkedIn tab.
 
 > Use the LinkedIn Amplifier skill to find first-degree connections who start substantive discussions about AI coding agents and product design. Give me a watchlist and three recent posts where I could add something from my own experience.
